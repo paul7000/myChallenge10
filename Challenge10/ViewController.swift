@@ -24,17 +24,16 @@ class ViewController: UIViewController {
             passwordLabel.placeholder = passwordToDisplay
         }
     }
-    
-    
     var usedLetters = [String]()
     var alphabet = [String]()
     var activatedButtons = [UIButton]()
-    
-    
     var scoreLabel: UILabel!
     var deathScoreLabel: UILabel!
     var passwordLabel: UITextField!
     var buttons = [UIButton]()
+    var categoryLabel: UILabel!
+    let categories = ["Family", "Body"]
+    
     
     
     override func loadView() {
@@ -58,6 +57,14 @@ class ViewController: UIViewController {
         deathScoreLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor).isActive = true
         deathScoreLabel.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor).isActive = true
         
+        categoryLabel = UILabel()
+        categoryLabel.translatesAutoresizingMaskIntoConstraints = false
+        categoryLabel.text = "Category:  \(categories[level - 1])"
+        categoryLabel.font = UIFont.systemFont(ofSize: 45)
+        view.addSubview(categoryLabel)
+        categoryLabel.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor, constant: 50).isActive = true
+        categoryLabel.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor).isActive = true
+        
         passwordLabel = UITextField()
         passwordLabel.translatesAutoresizingMaskIntoConstraints = false
         passwordLabel.isUserInteractionEnabled = false
@@ -68,7 +75,6 @@ class ViewController: UIViewController {
         passwordLabel.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 20).isActive = true
         passwordLabel.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor).isActive = true
         passwordLabel.centerYAnchor.constraint(equalTo: view.layoutMarginsGuide.centerYAnchor, constant: -100).isActive = true
-        
         
         
         let buttonsView = UIView()
@@ -184,7 +190,7 @@ class ViewController: UIViewController {
     }
         if tempStr.contains(buttonLetter) == true {
             score += 1
-            if tempStr.count == usedLetters.count {
+            if !tempStr.contains("?") {
                 for btn in activatedButtons {
                     btn.isHidden = false
                 }
@@ -194,20 +200,41 @@ class ViewController: UIViewController {
             score -= 1
             errorMessage()
         }
+        
+        
     } //KONIEC
     
     
+    
+    
     func setNewWord() {
-        let ac = UIAlertController(title: "11", message: "22", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "33", style: .cancel))
-        present(ac, animated: true)
         
+        if passwords.isEmpty {
+            let ac = UIAlertController(title: "Congratulations!", message: "You move on to next category.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Let's go!", style: .cancel))
+            present(ac, animated: true)
+                
+            level += 1
+            activatedButtons.removeAll()
+            usedLetters.removeAll()
+            selectedPassword.removeAll()
+            passwordToDisplay.removeAll()
+            loadView()
+            viewDidLoad()
+        } else {
+            let ac = UIAlertController(title: "Well done! Your score is \(score)", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .cancel))
+            present(ac, animated: true)
+            
         activatedButtons.removeAll()
         usedLetters.removeAll()
         selectedPassword.removeAll()
         passwordToDisplay.removeAll()
         selectPassword()
+        }
     } // KONIEC
+    
+    
     
     
     func errorMessage() {
